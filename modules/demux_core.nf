@@ -1,7 +1,7 @@
 process DEMUX_CORE {
     tag "$params.pool_ID"
     publishDir path: "${params.outdir}/demuxed_fastq", mode: 'copy', pattern: "*seqWell*"
-    publishDir path: "${params.outdir}/demuxed_fastq", mode: 'copy', pattern: "*unknown*"
+    publishDir path: "${params.outdir}/demuxed_fastq", mode: 'copy', pattern: "unknown.fastq.gz"
     publishDir path: "${params.outdir}/other/ME_tagged_fastq", mode: 'copy', pattern: '*tag*'
 
     input:

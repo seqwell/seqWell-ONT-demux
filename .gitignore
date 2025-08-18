@@ -1,1 +1,6 @@
 flow
+.nextflow
+.nextflow/*
+.nextflow*
+work/
+work/*

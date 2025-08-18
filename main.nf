@@ -28,7 +28,10 @@ workflow {
   
     DEMUX_SUMMARIZE (DEMUX_CORE.out.fq.collect())
     
+    DEMUX_CORE.out.fq.view()
+    
     demuxed_fq_ch = DEMUX_CORE.out.fq
+                  .flatten()
                   .map { fq -> tuple(fq.baseName.replace(".fastq",""), fq) }
     
     READ_LENGTH (demuxed_fq_ch)
