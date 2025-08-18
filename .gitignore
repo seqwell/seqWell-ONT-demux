@@ -4,3 +4,5 @@ flow
 .nextflow*
 work/
 work/*
+ci_output/
+ci_output/*
