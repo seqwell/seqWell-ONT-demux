@@ -17,44 +17,36 @@ The pipeline starts with multiple FASTQ.gz files and follows these key steps:
 2. **DEMUX_CORE**: Performs the core demultiplexing process using provided barcode sequences to separate reads by sample
 3. **DEMUX_SUMMARIZE**: Generates comprehensive summary statistics and reports from the demultiplexing results
 
-The final output includes demultiplexed FASTQ files organized by sample and detailed summary reports showing demultiplexing efficiency and read distribution.
+The final output includes demultiplexed FASTQ files organized by sample and detailed summary reports showing read counts by sample.
 
 ## Dependencies
 
-This pipeline requires installation of Nextflow. It also requires installation of either a containerization platform such as Docker or a package manager such as conda/mamba.
+This pipeline requires installation of Nextflow. It also requires installation of a containerization platform such as Docker.
 
 ### Docker Containers
-All docker containers used in this pipeline should be publicly available. The specific containers will depend on the tools used in your modules (not specified in the main workflow file).
+All docker containers used in this pipeline should be publicly available. 
 
-### Conda Environment
-A conda environment can be defined in `environment-pipeline.yml` and will be built automatically if the pipeline is run with `-profile conda`.
+- *DEMUX_CORE*: quay.io/biocontainers/cutadapt:5.0--py310h1fe012e_0
+- *MERGE_FASTQ*: ubuntu:20.04
+- *DEMUX_SUMMARIZE*: ubuntu:20.04
+
+
 
 ## How to run the pipeline
 
 ### Required Parameters
 
-The required parameters are `input`, `barcodes`, and `output`.
+The required parameters are `pool_ID`, `input`  and `outdir`.
 
 #### input
-`input` is the path to a directory containing FASTQ.gz files to be demultiplexed. The pipeline will automatically discover all `*.fastq.gz` files in this directory.
+`input` is the path to a directory containing FASTQ.gz files to be demultiplexed. The pipeline will automatically discover all `*.fastq.gz` files in this directory. This can be a local absolute path or an AWS S3 URI. If using an AWS S3 URI, please ensure your security credentials are configured appropriately.
 
-```
---input "/path/to/fastq/directory"
-```
 
-#### barcodes  
-`barcodes` is the path to a barcode file (likely in FASTA format) containing the barcode sequences used for demultiplexing.
+#### outdir
+The outdir directory path where results will be saved. This can be a local absolute path or an AWS S3 URI. If using an AWS S3 URI, please ensure your security credentials are configured appropriately.
 
-```
---barcodes "/path/to/barcode/file.fasta"
-```
-
-#### output
-The output directory path where results will be saved. This can be a local absolute path or an AWS S3 URI. If using an AWS S3 URI, please ensure your security credentials are configured appropriately.
-
-```
---output "/path/to/output/directory"
-```
+#### pool_ID
+The pool_ID is a character string which is used to name intermediate files produced in the pipeline. 
 
 ### Profiles
 
@@ -62,7 +54,6 @@ Several profiles are available and can be selected with the `-profile` option at
 
 - `apptainer`
 - `aws`
-- `conda` 
 - `docker`
 - `singularity`
 
@@ -72,11 +63,10 @@ A minimal execution might look like:
 
 ```bash
 nextflow run \
-    -profile docker \
     main.nf \
     --input "${PWD}/path/to/fastq/directory" \
-    --barcodes "${PWD}/path/to/barcodes.fasta" \
-    --output "${PWD}/path/to/output"
+    --outdir "${PWD}/path/to/output" \
+    --pool_ID "test_run"
 ```
 
 ## Running Test Data
@@ -86,79 +76,32 @@ The pipeline can be run using test data with:
 
 ```bash
 nextflow run \
-    -profile docker \
+    -profile test \
     main.nf \
-    -c nextflow.config \
-    --input "${PWD}/test_data/fastq" \
-    --barcodes "${PWD}/test_data/barcodes.fasta" \
-    --output "${PWD}/test_output" \
-    -with-report \
-    -with-trace \
-    -resume
+    --input "${PWD}/test_data/fastq_pass" \
+    --outdir "${PWD}/test_output" \
+    --pool_ID "test_run" \
+    -resume -bg
 ```
 
-### With Conda
-```bash
-nextflow run \
-    -profile conda \
-    main.nf \
-    -c nextflow.config \
-    --input "${PWD}/test_data/fastq" \
-    --barcodes "${PWD}/test_data/barcodes.fasta" \
-    --output "${PWD}/test_output" \
-    -with-report \
-    -with-trace \
-    -resume
-```
+
 
 ## Expected Outputs
 
 ```
-test_output/
-├── merged_fastq/
-│   └── merged_reads.fastq.gz                    # Consolidated FASTQ file from all input files
-├── demultiplexed/
-│   ├── sample_01.fastq.gz                       # Demultiplexed reads for sample 01
-│   ├── sample_02.fastq.gz                       # Demultiplexed reads for sample 02
-│   ├── ...
-│   └── unassigned.fastq.gz                      # Reads that could not be assigned to any sample
-├── summary/
-│   ├── demux_summary_report.csv                 # Summary of demultiplexing results
-│   ├── barcode_counts.txt                       # Count of reads assigned to each barcode
-│   └── demux_statistics.html                    # Detailed HTML report with statistics
-└── logs/
-    ├── execution_report_[DATE-TIME-STAMP].html  # Nextflow execution report
-    ├── execution_timeline_[DATE-TIME-STAMP].html # Nextflow execution timeline
-    ├── execution_trace_[DATE-TIME-STAMP].txt    # Nextflow execution trace
-    └── pipeline_dag_[DATE-TIME-STAMP].html      # Nextflow pipeline DAG
+├── demuxed_fastq
+│   ├── BC_01.seqWell.fastq.gz                              #demuxed reads from each well by seqWell barcode
+│   ├── BC_02.seqWell.fastq.gz
+│   ├── BC_03.seqWell.fastq.gz
+|   ........
+│   ├── BC_92.seqWell.fastq.gz
+│   ├── BC_93.seqWell.fastq.gz
+│   ├── BC_94.seqWell.fastq.gz
+│   ├── BC_95.seqWell.fastq.gz
+│   └── BC_96.seqWell.fastq.gz
+├── demux_summary
+│   └── 20250814_0.12_barcode_report.csv                    #demux summry report
+└── merged_fq
+    └── 20250814_ONT.fastq.gz                               #merged fastq from the input folder
 ```
-
-## Module Dependencies
-
-This pipeline relies on three custom modules that must be present in the `modules/` directory:
-
-- `modules/demux_core.nf` - Contains the core demultiplexing logic
-- `modules/demux_summarize.nf` - Generates summary statistics and reports  
-- `modules/merge_fastq.nf` - Handles merging of input FASTQ files
-
-## Configuration
-
-Additional pipeline configuration can be specified in `nextflow.config`. This may include:
-
-- Resource allocation (CPU, memory)
-- Container specifications
-- Profile-specific settings
-- Parameter defaults
-
-## Troubleshooting
-
-- Ensure all input FASTQ files are properly gzipped with `.fastq.gz` extension
-- Verify barcode file format is compatible with the demultiplexing tools used in `DEMUX_CORE`
-- Check that sufficient disk space is available for merged FASTQ files and outputs
-- For AWS S3 usage, confirm AWS credentials and permissions are properly configured
-
-
-
-
-
 
