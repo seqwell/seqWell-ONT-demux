@@ -19,6 +19,8 @@ The pipeline starts with multiple FASTQ.gz files and follows these key steps:
 
 The final output includes demultiplexed FASTQ files organized by sample and detailed summary reports showing read counts by sample.
 
+![seqWell-ONT-demux](assets/ont_demux.png "seqWell ONT demux Process")
+
 ## Dependencies
 
 This pipeline requires installation of Nextflow. It also requires installation of a containerization platform such as Docker.
