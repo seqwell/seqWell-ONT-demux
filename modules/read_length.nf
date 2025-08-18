@@ -1,6 +1,8 @@
 process READ_LENGTH {
     tag "$pair_id"
-    publishDir "${params.outdir}/read_length", pattern: '*weighted*',mode: 'copy'   
+    publishDir "${params.outdir}/read_length", pattern: '*weighted*',  mode: 'copy'  
+    publishDir "${params.outdir}/read_length", pattern: '*.read_length_plot.png', mode: 'copy'  
+   
  
     input:
     tuple val(pair_id), path(fq)
