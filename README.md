@@ -26,7 +26,7 @@ The final output includes demultiplexed FASTQ files organized by sample and deta
 This pipeline requires installation of Nextflow. It also requires installation of a containerization platform such as Docker.
 
 ### Docker Containers
-All docker containers used in this pipeline should be publicly available. 
+All docker containers used in this pipeline are publicly available. 
 
 - *DEMUX_CORE*: quay.io/biocontainers/cutadapt:5.0--py310h1fe012e_0
 - *MERGE_FASTQ*: ubuntu:20.04
@@ -41,11 +41,11 @@ All docker containers used in this pipeline should be publicly available.
 The required parameters are `pool_ID`, `input`  and `outdir`.
 
 #### input
-`input` is the path to a directory containing FASTQ.gz files to be demultiplexed. The pipeline will automatically discover all `*.fastq.gz` files in this directory. This can be a local absolute path or an AWS S3 URI. If using an AWS S3 URI, please ensure your security credentials are configured appropriately.
+`input` is the path to a directory containing FASTQ.gz files to be demultiplexed. The pipeline will automatically discover all `*.fastq.gz` files in this directory. This can be a local absolute path or an AWS S3 URI. If using an AWS S3 URI, please ensure your security credentials are filled in the nextflow.config file.
 
 
 #### outdir
-The `outdir` directory path is where results will be saved. This can be a local absolute path or an AWS S3 URI. If using an AWS S3 URI, please ensure your security credentials are configured appropriately.
+The `outdir` directory path is where results will be saved. This can be a local absolute path or an AWS S3 URI. If using an AWS S3 URI, please ensure your security credentials are filled in the nextflow.config file.
 
 #### pool_ID
 The pool_ID is a character string which is used to name intermediate files and summary report files produced in the pipeline. 
@@ -72,7 +72,6 @@ nextflow run \
 
 ## Running Test Data
 
-### With Docker
 The pipeline can be run using test data with:
 
 ```bash
