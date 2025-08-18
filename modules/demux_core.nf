@@ -1,6 +1,7 @@
 process DEMUX_CORE {
     tag "$params.pool_ID"
     publishDir path: "${params.outdir}/demuxed_fastq", mode: 'copy', pattern: "*seqWell*"
+    publishDir path: "${params.outdir}/demuxed_fastq", mode: 'copy', pattern: "*unknown*"
     publishDir path: "${params.outdir}/other/ME_tagged_fastq", mode: 'copy', pattern: '*tag*'
 
     input:
@@ -24,8 +25,7 @@ process DEMUX_CORE {
         -o {name}_step1.fastq.gz \
         ${fq}
 
-    # Step 2: Adapter trim (single-end)
-    # Assuming only one demuxed file per barcode
+    # Step 2: Adapter trim 
     for f in *_step1.fastq.gz; do
         base=\$(basename \$f _step1.fastq.gz)
         cutadapt \
