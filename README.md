@@ -52,12 +52,11 @@ The pool_ID is a character string which is used to name intermediate files and s
 
 ### Profiles
 
-Several profiles are available and can be selected with the `-profile` option at the command line:
+Several profiles are available and can be selected with the `-profile` option at the command line. Default profile is docker. 
 
-- `apptainer`
-- `aws`
+- `awsbatch`
 - `docker`
-- `singularity`
+
 
 ### Example Command
 
@@ -78,7 +77,6 @@ The pipeline can be run using test data with:
 
 ```bash
 nextflow run \
-    -profile test \
     main.nf \
     --input "${PWD}/test_data/fastq_pass" \
     --outdir "${PWD}/test_output" \
