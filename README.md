@@ -16,10 +16,14 @@ The pipeline starts with multiple FASTQ.gz files and follows these key steps:
 1. **MERGE_FASTQ**: Collects and merges all input FASTQ files into a single consolidated file for processing
 2. **DEMUX_CORE**: Performs the core demultiplexing process using provided barcode sequences to separate reads by sample using cutadapt
 3. **DEMUX_SUMMARIZE**: Generates comprehensive summary statistics and reports from the demultiplexing results
+4. **READ_LENGTH**: Calculates read length distributions from the demultiplexed FASTQ files.
+5. **NANOSTAT**: Produces detailed per-sample sequencing statistics from the demultiplexed FASTQ files.
+6. **MULTIQC**: Aggregates results from NanoStat into a single interactive HTML report.
 
-The final output includes demultiplexed FASTQ files organized by sample and detailed summary reports showing read counts by sample.
 
-![seqWell-ONT-demux](assets/ont_demux.png "seqWell ONT demux Process")
+The final output includes demultiplexed FASTQ files organized by sample, detailed summary reports showing read counts by sample, weighted read length distribution plots, and a MultiQC report which interpretated NanoStat reports.
+
+![seqWell-ONT-demux](assets/ont_demux_workflow.png "seqWell ONT demux Process")
 
 ## Dependencies
 
@@ -31,6 +35,10 @@ All docker containers used in this pipeline are publicly available.
 - *DEMUX_CORE*: quay.io/biocontainers/cutadapt:5.0--py310h1fe012e_0
 - *MERGE_FASTQ*: ubuntu:20.04
 - *DEMUX_SUMMARIZE*: ubuntu:20.04
+- *READ_LENGTH*: seqwell/python:v2.0
+- *NANOSTAT*: quay.io/biocontainers/nanostat:1.6.0--pyhdfd78af_0
+- *MULTIQC*: quay.io/biocontainers/multiqc:1.25.1--pyhdfd78af_0
+
 
 
 
@@ -101,6 +109,14 @@ nextflow run \
 ├── demux_summary
 │   └── 20250814_demux_report.csv                           #demux summry report
 └── merged_fq
-    └── 20250814_ONT.fastq.gz                               #merged fastq from the input folder
+|   └── 20250814_ONT.fastq.gz                               #merged fastq from the input folder
+├── read_length
+│   └── BC_01.read_length_plot_weighted.png                 #weighted per-sample read length distribution
+│   ├── BC_02.read_length_plot_weighted.png
+│   ├── BC_03.read_length_plot_weighted.png
+│   ├── BC_04.read_length_plot_weighted.png                            
+|   ......
+└── multiQC
+    └── 20250814_multiqc_report.html                        # aggregated NanoStat report
 ```
 

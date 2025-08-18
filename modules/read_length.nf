@@ -1,6 +1,6 @@
-process LEAFPLOT {
+process READ_LENGTH {
     tag "$pair_id"
-    publishDir "${params.outdir}/read_length_plots", mode: 'copy'   
+    publishDir "${params.outdir}/read_length", pattern: '*weighted*',mode: 'copy'   
  
     input:
     tuple val(pair_id), path(fq)
@@ -11,7 +11,7 @@ process LEAFPLOT {
     path( "*bin_table.txt" ),  emit: bin
     path( "*weighted*"), emit: weighted_plot 
 
-    container '512431263418.dkr.ecr.us-east-1.amazonaws.com/python-pandas'
+    
 
     script:
     """
@@ -28,7 +28,7 @@ process LEAFPLOT {
   
 
     # call external Python script from bin/
-    leafplot.py ${pair_id}.read_lengths.txt ${pair_id}.read_length_plot.png
+    read_length.py ${pair_id}.read_lengths.txt ${pair_id}.read_length_plot.png
     """
 }
 
