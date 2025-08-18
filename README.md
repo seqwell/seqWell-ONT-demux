@@ -1,6 +1,6 @@
 # seqWell-ONT-demux
 
-barcodeID,Index well,Reference
+
 
 [![Nextflow Workflow Tests](https://github.com/seqwell/seqWell-ONT-demux/actions/workflows/nextflow-ci.yml/badge.svg?branch=main)](https://github.com/seqwell/seqWell-ONT-demux/actions/workflows/nextflow-ci.yml?query=branch%3Amain)
 [![Nextflow](https://img.shields.io/badge/Nextflow%20DSL2-%E2%89%A523.04.0-blue.svg)](https://www.nextflow.io/)
@@ -14,7 +14,7 @@ This is a Nextflow pipeline for demultiplexing ONT FASTQ files using seqWell kit
 The pipeline starts with multiple FASTQ.gz files and follows these key steps:
 
 1. **MERGE_FASTQ**: Collects and merges all input FASTQ files into a single consolidated file for processing
-2. **DEMUX_CORE**: Performs the core demultiplexing process using provided barcode sequences to separate reads by sample
+2. **DEMUX_CORE**: Performs the core demultiplexing process using provided barcode sequences to separate reads by sample using cutadapt
 3. **DEMUX_SUMMARIZE**: Generates comprehensive summary statistics and reports from the demultiplexing results
 
 The final output includes demultiplexed FASTQ files organized by sample and detailed summary reports showing read counts by sample.
@@ -45,10 +45,10 @@ The required parameters are `pool_ID`, `input`  and `outdir`.
 
 
 #### outdir
-The outdir directory path where results will be saved. This can be a local absolute path or an AWS S3 URI. If using an AWS S3 URI, please ensure your security credentials are configured appropriately.
+The `outdir` directory path is where results will be saved. This can be a local absolute path or an AWS S3 URI. If using an AWS S3 URI, please ensure your security credentials are configured appropriately.
 
 #### pool_ID
-The pool_ID is a character string which is used to name intermediate files produced in the pipeline. 
+The pool_ID is a character string which is used to name intermediate files and summary report files produced in the pipeline. 
 
 ### Profiles
 
@@ -102,7 +102,7 @@ nextflow run \
 │   ├── BC_95.seqWell.fastq.gz
 │   └── BC_96.seqWell.fastq.gz
 ├── demux_summary
-│   └── 20250814_0.12_barcode_report.csv                    #demux summry report
+│   └── 20250814_demux_report.csv                           #demux summry report
 └── merged_fq
     └── 20250814_ONT.fastq.gz                               #merged fastq from the input folder
 ```

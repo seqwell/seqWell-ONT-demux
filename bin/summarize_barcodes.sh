@@ -5,7 +5,7 @@ set -x  # for debugging
 # Arguments
 pool_id=${1:?Missing pool_id}
 error_rate=${2:?Missing error_rate}
-summary_file="${pool_id}_${error_rate}_barcode_report.csv"
+summary_file="${pool_id}_demux_report.csv"
 
 # Initialize
 declare -A barcode_counts
