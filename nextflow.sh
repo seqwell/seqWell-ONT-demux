@@ -5,7 +5,7 @@ outdir=20250811_demux
 pool_ID=20250811
 
 
-/software/nextflow-align/nextflow run \
+nextflow run \
 main.nf \
 --input $input \
 --outdir $outdir \
