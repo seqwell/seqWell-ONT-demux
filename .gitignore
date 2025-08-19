@@ -1,7 +1,9 @@
 flow
 .nextflow
 .nextflow/*
-.nextflow*
+.nextflow.log*
+.nextflow.pid*
+!nextflow.sh
 work/
 work/*
 ci_output/
