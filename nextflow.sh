@@ -1,6 +1,6 @@
 #!/bin/bash
 
-input=test/data/fastq_pass
+input=test_data/fastq_pass
 outdir=20250811_demux
 pool_ID=20250811
 
